@@ -1,0 +1,177 @@
+/* PeraharaPath */
+:root {
+    --bg-dark: #121212;
+    --panel-dark: #1E1E1E;
+    --text-primary: #EAEAEA;
+    --text-secondary: #AAAAAA;
+    --accent-gold: #fff501; 
+    --border-color: #333333;
+    --warning-red: #dc3545;
+}
+
+* { 
+    margin: 0; 
+    padding: 0; 
+    box-sizing: border-box; 
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--bg-dark);
+    color: var(--text-primary);
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+}
+.app-container { 
+    display: flex; 
+    height: 100vh; 
+}
+.control-panel {
+    width: 400px;
+    background-color: var(--panel-dark);
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 5px 0 15px rgba(0, 0, 0, 0.5);
+    z-index: 10;
+    overflow-y: auto;
+}
+.map-container { 
+    flex-grow: 1; 
+}
+#map { 
+    height: 100%; 
+    width: 100%; 
+    background-color: var(--bg-dark); 
+}
+header { 
+    text-align: center; 
+    margin-bottom: 2rem; 
+}
+.logo { 
+    max-width: 80px; 
+    margin-bottom: 0.5rem; 
+}
+h1 { 
+    color: var(--accent-gold); 
+    font-weight: 700; 
+}
+header p { 
+    color: var(--text-secondary); 
+    font-size: 0.9rem; 
+}
+.form-group { 
+    margin-bottom: 1.5rem; 
+}
+label { 
+    display: block; 
+    margin-bottom: 0.5rem; 
+    font-size: 0.9rem; 
+    font-weight: 500; 
+    color: var(--text-secondary); 
+}
+select, input[type="datetime-local"] {
+    width: 100%;
+    padding: 0.8rem;
+    background-color: var(--bg-dark);
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    color: var(--text-primary);
+    font-family: 'Poppins', sans-serif;
+}
+input[type="datetime-local"]::-webkit-calendar-picker-indicator { 
+    filter: invert(1); 
+}
+
+button {
+    width: 100%;
+    padding: 0.9rem;
+    background: var(--accent-gold);
+    color: var(--bg-dark);
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+button:hover { 
+    transform: translateY(-2px); 
+    box-shadow: 0 4px 10px rgba(255, 245, 1, 0.2); 
+}
+button:disabled { 
+    background: #555; 
+    cursor: not-allowed; 
+    transform: none; 
+    box-shadow: none; 
+}
+
+/* Results Panel */
+#results-panel {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border-color);
+}
+#message {
+    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    font-weight: 500;
+}
+.results-section {
+    background-color: var(--bg-dark);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    padding: 1rem;
+}
+.results-section h4 {
+    color: var(--text-secondary);
+    font-weight: 500;
+    font-size: 0.9rem;
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+#cost-details {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 1rem;
+}
+.cost-item { 
+    text-align: center; 
+}
+.cost-item span { 
+    display: block; 
+    font-size: 0.8rem; 
+    color: var(--text-secondary); 
+    margin-bottom: 0.25rem; 
+}
+.cost-item strong { 
+    display: block; 
+    font-size: 1.2rem; 
+    font-weight: 700; 
+    color: var(--accent-gold); 
+}
+#route-details-path {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    text-align: center;
+}
+#warnings-panel .warning-item {
+    background-color: rgba(220, 53, 69, 0.1);
+    border-left: 3px solid var(--warning-red);
+    padding: 0.75rem;
+    margin-bottom: 0.5rem;
+    font-size: 0.85rem;
+    color: var(--text-primary);
+}
+.leaflet-tile-pane { 
+    filter: brightness(0.6) invert(1) contrast(3) hue-rotate(200deg) saturate(0.3) brightness(0.7); 
+}
+@media (max-width: 768px) {
+    .app-container { flex-direction: column; }
+    .control-panel { width: 100%; height: 50vh; order: 2; }
+    .map-container { height: 50vh; order: 1; }
+}

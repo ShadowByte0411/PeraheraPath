@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PeraharaPath - Smart Routing</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="app-container">
+        <aside class="control-panel">
+            <header>
+                <img src="{{ url_for('static', filename='logo.png') }}" alt="PeraharaPath Logo" class="logo">
+                <h1>PeraharaPath</h1>
+                <p>Smart Festival Routing in Sri Lanka</p>
+            </header>
+
+            <form id="route-form">
+                <div class="form-group">
+                    <label for="start-city">Start City</label>
+                    <select id="start-city" required></select>
+                </div>
+                <div class="form-group">
+                    <label for="goal-city">Goal City</label>
+                    <select id="goal-city" required></select>
+                </div>
+                <div class="form-group">
+                    <label for="datetime">Date & Time of Travel</label>
+                    <input type="datetime-local" id="datetime" required>
+                </div>
+                <button type="submit" id="find-route-btn">Find Fastest Route</button>
+            </form>
+
+            <div id="results-panel">
+                <h3 id="message">Plan your journey</h3>
+                
+                <div id="results-content" class="hidden">
+                    <div class="results-section">
+                        <h4>Trip Summary</h4>
+                        <div id="cost-details">
+                            <div class="cost-item">
+                                <span>Travel Time</span>
+                                <strong id="time-output">-</strong>
+                            </div>
+                            <div class="cost-item">
+                                <span>Distance</span>
+                                <strong id="distance-output">-</strong>
+                            </div>
+                            <div class="cost-item">
+                                <span>Fuel Cost</span>
+                                <strong id="fuel-output">-</strong>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="results-section">
+                        <h4>Route</h4>
+                        <div id="route-details-path"></div>
+                    </div>
+
+                    <div id="warnings-panel" class="results-section hidden">
+                        <h4>Alerts</h4>
+                        <div id="warnings-content"></div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <main class="map-container">
+            <div id="map"></div>
+        </main>
+    </div>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
