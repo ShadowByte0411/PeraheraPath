@@ -4,7 +4,7 @@ import heapq
 from datetime import datetime
 from flask import Flask, render_template, request, jsonify
 
-#REAL-WORLD COST PARAMETERS
+# REAL-WORLD COST PARAMETERS
 FUEL_PRICE_PER_LITER_LKR = 375.00
 AVG_VEHICLE_EFFICIENCY_KMPL = 12.0
 AVG_SPEED_NORMAL_KMH = 60.0
@@ -13,10 +13,10 @@ AVG_SPEED_HIGH_KMH = 20.0
 AVG_SPEED_VERY_HIGH_KMH = 10.0
 ROAD_CLOSURE_PENALTY_HOURS = 100.0
 
-#FLASK APP INITIALIZATION
+# FLASK APP INITIALIZATION
 app = Flask(__name__)
 
-#DATA LOADING
+# DATA LOADING
 with open('data.json', 'r', encoding='utf-8') as f:
     DB = json.load(f)
 
@@ -29,18 +29,19 @@ for conn in DB['connections']:
     reverse_conn = {**conn, 'from': conn['to'], 'to': conn['from']}
     GRAPH[conn['to']].append(reverse_conn)
 
-#HELPER FUNCTIONS
+# HELPER FUNCTIONS
 def get_speed(congestion_level):
     if congestion_level == 'very_high': return AVG_SPEED_VERY_HIGH_KMH
     if congestion_level == 'high': return AVG_SPEED_HIGH_KMH
     if congestion_level == 'medium': return AVG_SPEED_MEDIUM_KMH
     return AVG_SPEED_NORMAL_KMH
 
-def parse_datetime_str(datetime_str):
+def parse_datetime_str(datetime_obj):
     try:
-        dt_obj = datetime.strptime(datetime_str, '%B-%d %H:%M')
-        return dt_obj.strftime('%B').lower(), dt_obj.day, dt_obj.strftime('%H:%M')
-    except ValueError: return None, None, None
+        return datetime_obj.strftime('%B').lower(), datetime_obj.day, datetime_obj.strftime('%H:%M')
+    except (ValueError, AttributeError):
+        return None, None, None
+
 
 def get_city_event(city, month, day):
     for festival in DB['festivals']:
@@ -62,16 +63,16 @@ def is_city_closed(city, event_name, time_str):
                 return True
     return False
 
-#CORE A* PATHFINDING LOGIC
+# CORE A* PATHFINDING LOGIC
 def heuristic(city_a, city_b):
     coords_a, coords_b = DB['coordinates'].get(city_a), DB['coordinates'].get(city_b)
     if not coords_a or not coords_b: return 1.0
     distance_km = math.sqrt((coords_b[0] - coords_a[0])**2 + (coords_b[1] - coords_a[1])**2) * 111
     return distance_km / AVG_SPEED_NORMAL_KMH
 
-def a_star_search(start, goal, travel_datetime_str):
-    month, day, time_str = parse_datetime_str(travel_datetime_str)
-    if not month: return None, {"displayName": "Invalid date/time format."}
+def a_star_search(start, goal, travel_datetime_obj):
+    month, day, time_str = parse_datetime_str(travel_datetime_obj)
+    if not month: return None, {"displayName": "Invalid date/time object."}
 
     active_event_obj = get_city_event(goal, month, day)
     active_event_name = active_event_obj['name'] if active_event_obj else None
@@ -102,11 +103,11 @@ def a_star_search(start, goal, travel_datetime_str):
             heapq.heappush(open_set, (new_g_cost_time + heuristic(neighbor_city, goal), new_g_cost_time, neighbor_city, path + [neighbor_city]))
     return None, None
 
-#WARNING & COST FUNCTIONS
-def get_route_warnings(path, event_obj, travel_datetime_str):
+# WARNING & COST FUNCTIONS
+def get_route_warnings(path, event_obj, travel_datetime_obj):
     warnings = []
     if not event_obj: return warnings
-    month, day, time_str = parse_datetime_str(travel_datetime_str)
+    month, day, time_str = parse_datetime_str(travel_datetime_obj)
     event_name = event_obj['name']
     for city in set(path):
         if is_city_closed(city, event_name, time_str):
@@ -134,7 +135,7 @@ def calculate_final_costs(path, event_obj):
     fuel_cost_lkr = (total_distance_km / AVG_VEHICLE_EFFICIENCY_KMPL) * FUEL_PRICE_PER_LITER_LKR
     return total_time_hours, total_distance_km, fuel_cost_lkr
 
-#API ENDPOINTS
+# API ENDPOINTS
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -146,21 +147,26 @@ def get_cities():
 @app.route('/api/route', methods=['POST'])
 def find_route():
     data = request.json
-    start_city, goal_city, datetime_str_raw = data.get('start', '').lower(), data.get('goal', '').lower(), data.get('datetime', '').replace("T", " ")
-    if not all([start_city, goal_city, datetime_str_raw]): return jsonify({'error': "Missing start, goal, or date."}), 400
-    if start_city not in DB['coordinates'] or goal_city not in DB['coordinates']: return jsonify({'error': "One of the cities is not recognized."}), 400
+    start_city = data.get('start', '').lower()
+    goal_city = data.get('goal', '').lower()
+    datetime_str_raw = data.get('datetime', '') 
+    if not all([start_city, goal_city, datetime_str_raw]):
+        return jsonify({'error': "Missing start, goal, or date."}), 400
+    if start_city not in DB['coordinates'] or goal_city not in DB['coordinates']:
+        return jsonify({'error': "One of the cities is not recognized."}), 400
 
     try:
         dt_obj = datetime.strptime(datetime_str_raw, '%Y-%m-%d %H:%M')
-        formatted_datetime = dt_obj.strftime('%B-%d %H:%M')
-    except ValueError: return jsonify({'error': "Invalid date format."}), 400
-
-    path, event_obj = a_star_search(start_city, goal_city, formatted_datetime)
-    if not path: return jsonify({'error': "No route could be found."}), 404
+    except ValueError:
+        return jsonify({'error': "Invalid date format received. Expected YYYY-MM-DD HH:MM."}), 400
+       
+    path, event_obj = a_star_search(start_city, goal_city, dt_obj) 
+    if not path:
+        return jsonify({'error': "No route could be found."}), 404
 
     message = f"Event detected: {event_obj['displayName']}" if event_obj else "No festival event detected."
     time, distance, fuel = calculate_final_costs(path, event_obj)
-    warnings = get_route_warnings(path, event_obj, formatted_datetime)
+    warnings = get_route_warnings(path, event_obj, dt_obj) # Pass the object
     
     return jsonify({
         'path': path, 'message': message, 'warnings': warnings,
