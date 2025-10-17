@@ -40,38 +40,46 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // FORM SUBMISSION 
     form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        
-        findRouteBtn.disabled = true;
-        findRouteBtn.textContent = 'Calculating...';
-        resetResults();
-        routeLayer.clearLayers();
+    e.preventDefault();
+    
+    findRouteBtn.disabled = true;
+    findRouteBtn.textContent = 'Calculating...';
+    resetResults();
+    routeLayer.clearLayers();
 
-        const payload = {
-            start: startCitySelect.value,
-            goal: goalCitySelect.value,
-            datetime: document.getElementById('datetime').value
-        };
+    // --- THIS IS THE CORRECTED PART ---
+    const rawDatetime = document.getElementById('datetime').value;
+    const dateObject = new Date(rawDatetime);
+    
+    // Format the date to "YYYY-MM-DD HH:MM" which is easier for Flask
+    const formattedDatetime = `${dateObject.getFullYear()}-${String(dateObject.getMonth() + 1).padStart(2, '0')}-${String(dateObject.getDate()).padStart(2, '0')} ${String(dateObject.getHours()).padStart(2, '0')}:${String(dateObject.getMinutes()).padStart(2, '0')}`;
 
-        try {
-            const response = await fetch('/api/route', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
+    const payload = {
+        start: startCitySelect.value,
+        goal: goalCitySelect.value,
+        datetime: formattedDatetime // Send the correctly formatted string
+    };
+    // --- END OF CORRECTION ---
 
-            const data = await response.json();
-            if (!response.ok) throw new Error(data.error || 'Failed to find a route.');
-            displayRoute(data);
+    try {
+        const response = await fetch('/api/route', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
 
-        } catch (error) {
-            messageEl.textContent = `Error: ${error.message}`;
-            console.error('Routing Error:', error);
-        } finally {
-            findRouteBtn.disabled = false;
-            findRouteBtn.textContent = 'Find Fastest Route';
-        }
-    });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || 'Failed to find a route.');
+        displayRoute(data);
+
+    } catch (error) {
+        messageEl.textContent = `Error: ${error.message}`;
+        console.error('Routing Error:', error);
+    } finally {
+        findRouteBtn.disabled = false;
+        findRouteBtn.textContent = 'Find Fastest Route';
+    }
+});
 
     const displayRoute = (data) => {
         messageEl.textContent = data.message;
