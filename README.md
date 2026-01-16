@@ -6,16 +6,16 @@ Navigating Sri Lanka during festival seasons can be challenging due to unpredict
 This project empowers users to make informed travel decisions, avoiding delays and enjoying the cultural richness of Sri Lanka without the stress of navigating through festival congestion.
 
 ### Key Features
-  * **📍 Map-Based Route Planning:** Computes the fastest path between any two districts using an A\* search algorithm.
-  * **⚠️ Dynamic Disruption Warnings:** Alerts users to potential delays by factoring in active festivals, road closures, and real-time congestion estimates.
-  * **💰 Real-World Cost Estimation:** Calculates estimated travel time, total distance, and fuel expenses for the journey.
-  * **🕌 Cultural Data Integration:** Utilizes a centralized JSON database of major Sri Lankan festivals, their schedules, and their impact on traffic.
-  * **🖥️ User-Friendly Visualization:** Provides an intuitive web interface for planning trips and visualizing the final route and warnings on an interactive map.
+  * ** Map-Based Route Planning:** Computes the fastest path between any two districts using an A\* search algorithm.
+  * ** Dynamic Disruption Warnings:** Alerts users to potential delays by factoring in active festivals, road closures, and real-time congestion estimates.
+  * ** Real-World Cost Estimation:** Calculates estimated travel time, total distance, and fuel expenses for the journey.
+  * ** Cultural Data Integration:** Utilizes a centralized JSON database of major Sri Lankan festivals, their schedules, and their impact on traffic.
+  * ** User-Friendly Visualization:** Provides an intuitive web interface for planning trips and visualizing the final route and warnings on an interactive map.
 
 ## Technology Stack
 This project is built with a modern, lightweight technology stack:
   * **Backend:** **Python** with the **Flask** framework
-  * **Frontend:** **HTML5**, **CSS3**, and vanilla **JavaScript**
+  * **Frontend:** **HTML**, **CSS**, and **JavaScript**
   * **Mapping Library:** **Leaflet.js** for interactive map visualization
   * **Data Storage:** **JSON** for the festival and road network database
 
