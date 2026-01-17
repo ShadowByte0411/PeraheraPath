@@ -131,6 +131,7 @@
     "kurunegala_road": "kurunegala",
     "puttalam_road": "puttalam"
   },
+  
   "road_closures": [
     {"road": "kandy_road", "event": "esala_perahera", "time": "18:00-23:00"},
     {"road": "kandy_road", "event": "dalada_perahera", "time": "18:00-23:00"},
@@ -153,8 +154,9 @@
     {"road": "kurunegala_road", "event": "eth_perahera", "time": "18:00-21:00"},
     {"road": "puttalam_road", "event": "fishing_festival", "time": "08:00-15:00"}
   ],
+  
   "coordinates": {
     "colombo": [6.9271, 79.8612], "gampaha": [7.0930, 79.9989], "kalutara": [6.5854, 79.9607], "kandy": [7.2906, 80.6337], "matale": [7.4675, 80.6234], "nuwara_eliya": [6.9682, 80.7844], "galle": [6.0535, 80.2210], "matara": [5.9549, 80.5550], "hambantota": [6.1246, 81.1185], "jaffna": [9.6615, 80.0255], "kilinochchi": [9.3920, 80.4053], "mannar": [8.9785, 79.9030], "vavuniya": [8.7542, 80.4982], "mullaitivu": [9.2668, 80.8145], "batticaloa": [7.7195, 81.6924], "ampara": [7.2959, 81.6781], "trincomalee": [8.5876, 81.2152], "kurunegala": [7.4818, 80.3609], "puttalam": [8.0345, 79.8331], "anuradhapura": [8.3114, 80.4037], "polonnaruwa": [7.9403, 81.0186], "badulla": [6.9934, 81.0550], "monaragala": [6.8737, 81.3458], "ratnapura": [6.7056, 80.3847], "kegalle": [7.2514, 80.3464]
   }
-
 }
+
