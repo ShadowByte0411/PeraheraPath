@@ -170,8 +170,10 @@ button:disabled {
 .leaflet-tile-pane { 
     filter: brightness(0.6) invert(1) contrast(3) hue-rotate(200deg) saturate(0.3) brightness(0.7); 
 }
+
 @media (max-width: 768px) {
     .app-container { flex-direction: column; }
     .control-panel { width: 100%; height: 50vh; order: 2; }
     .map-container { height: 50vh; order: 1; }
+
 }
